@@ -28,7 +28,6 @@ substitutions:
   _DB_HOST: 'your-db-host'
   _QUEUE_NAME: 'your-queue-name'
   _GCS_BUCKET_NAME: 'your-gcs-bucket-name'
-  _CLOUD_RUN_URL: your-cloud-run-url'
   _PROJECT_ID: 'your-project-id'
 
 images:
