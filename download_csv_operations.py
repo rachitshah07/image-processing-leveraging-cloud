@@ -13,8 +13,8 @@ def upload_csv_to_cloud_storage(csv_data: str) -> str:
         client = storage.Client()
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(destination_blob_name)
-        
-        blob.upload_from_string(csv_data, content_type="text/csv")
+        csv_bytes = csv_data.encode("utf-8")
+        blob.upload_from_string(csv_bytes, content_type="text/csv")
         url = blob.generate_signed_url(expiration=3600)
         return url
     except Exception as e:
