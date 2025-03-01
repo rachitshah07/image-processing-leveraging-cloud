@@ -17,6 +17,7 @@ def save_request(request_id):
         db.add(new_request)
         db.commit()
         db.close()
+        print(f"New request added with request id {request_id}")
     except Exception as e:
         print(f"Error saving request {request_id} in DB: {traceback.format_exc()}")
         
