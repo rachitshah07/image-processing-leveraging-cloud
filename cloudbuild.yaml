@@ -29,6 +29,7 @@ substitutions:
   _QUEUE_NAME: 'your-queue-name'
   _GCS_BUCKET_NAME: 'your-gcs-bucket-name'
   _PROJECT_ID: 'your-project-id'
+  _INSTANCE_CONNECTION_NAME: 'your-instance-connection-name'
 
 images:
   - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${SHORT_SHA}'
