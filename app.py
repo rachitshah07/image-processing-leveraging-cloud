@@ -1,3 +1,4 @@
+import traceback
 from flask import Flask, request, jsonify
 import uuid
 from database.database import save_product , save_request ,get_products,get_request_status,get_completed_request_products
@@ -71,21 +72,35 @@ def download_csv():
         products = get_completed_request_products()
         if not products:
             return jsonify({"error": "No processed images available"}), 404
-        
-        data = [product.to_dict() for product in products] if products else []
-        
-        df = pd.DataFrame(data)
-        csv_path = "processed_images.csv"
+
+        # Convert product objects to serializable dictionaries and create a DataFrame
+        try:
+            data = [product.to_dict() for product in products]
+            df = pd.DataFrame(data)
+        except Exception as e:
+            print(f"Error converting products to DataFrame: {e}\n{traceback.format_exc()}")
+            raise
+
         env = os.environ.get("ENV", "deployment").lower()
-        
+        csv_path = "processed_images.csv"  
         if env == "local":
-            df.to_csv(csv_path, index=False)
+            try:
+                df.to_csv(csv_path, index=False)
+            except Exception as e:
+                print(f"Error saving CSV locally: {e}\n{traceback.format_exc()}")
+                raise
         else:
-            csv_path = upload_csv_to_cloud_storage(csv_data=data)
+            try:
+                csv_data = df.to_csv(index=False)
+                csv_path = upload_csv_to_cloud_storage(csv_data=csv_data)
+            except Exception as e:
+                print(f"Error uploading CSV to cloud storage: {e}\n{traceback.format_exc()}")
+                raise
+
         return jsonify({"download_url": csv_path}), 200
-    
+
     except Exception as e:
-        print(f"Error generating CSV: {e}")
+        print(f"Error generating CSV: {e}\n{traceback.format_exc()}")
         return jsonify({"error": "Failed to generate CSV"}), 500
     
 
