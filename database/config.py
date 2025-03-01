@@ -77,13 +77,15 @@ def create_cloud_database_if_not_exists():
     if not INSTANCE_CONNECTION_NAME:
         raise ValueError("INSTANCE_CONNECTION_NAME environment variable is not set")
     connector = Connector(refresh_strategy="LAZY")
+    #need to connect to a default database (like postgres) first
+    # and then issue the CREATE DATABASE command if necessary.
     try:
         conn = connector.connect(
             instance_connection_string=INSTANCE_CONNECTION_NAME,
             driver="pg8000",
             user=DB_USER,
             password=DB_PASS,
-            db=DB_NAME, 
+            db="postgres", 
             ip_type=IPTypes.PUBLIC
         )
         cursor = conn.cursor()
