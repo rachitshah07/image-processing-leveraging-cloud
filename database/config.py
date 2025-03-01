@@ -28,7 +28,7 @@ SessionLocal = None
 engine = None
 
 
-def create_database_if_not_exists():
+def create_local_database_if_not_exists():
     """Creates local database if not exists"""
     try:
         connection = psycopg2.connect(
@@ -72,10 +72,44 @@ def connect_with_connector():
     return sqlalchemy.create_engine("postgresql+pg8000://", creator=getconn)
 
 
+def create_cloud_database_if_not_exists():
+    """Creates database in Google Cloud SQL if not exists"""
+    if not INSTANCE_CONNECTION_NAME:
+        raise ValueError("INSTANCE_CONNECTION_NAME environment variable is not set")
+    connector = Connector(refresh_strategy="LAZY")
+    try:
+        conn = connector.connect(
+            instance_connection_string=INSTANCE_CONNECTION_NAME,
+            driver="pg8000",
+            user=DB_USER,
+            password=DB_PASS,
+            db=DB_NAME, 
+            ip_type=IPTypes.PUBLIC
+        )
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{DB_NAME}';")
+        exists = cursor.fetchone()
+
+        conn.autocommit = True
+        
+        if not exists:
+            cursor.execute(f"CREATE DATABASE {DB_NAME};")
+            print(f"Database '{DB_NAME}' created successfully in Cloud SQL.")
+        else:
+            print(f"Database '{DB_NAME}' already exists in Cloud SQL.")
+        cursor.close()
+        conn.close()
+        
+    except Exception as e:
+        print(f"Cloud SQL database creation error: {e}")
+    finally:
+        connector.close()
+
+
 if LOCAL_ENV == "local":
     print("Running in Local Environment")
     DB_URL = f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}/{DB_NAME}"
-    create_database_if_not_exists()
+    create_local_database_if_not_exists()
     try:
         engine = create_engine(DB_URL)
         print("Local SQLAlchemy Engine created successfully.")
@@ -85,6 +119,7 @@ if LOCAL_ENV == "local":
 else:
     print("Running in Cloud Environment")
     try:
+        create_cloud_database_if_not_exists()
         engine = connect_with_connector()
         print("Cloud SQL Engine created successfully.")
     except Exception as e:
