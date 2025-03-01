@@ -15,7 +15,7 @@ steps:
       '--platform', 'managed',
       '--region', '${_REGION}',
       '--allow-unauthenticated',
-      '--set-env-vars', 'DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME},DB_HOST=${_DB_HOST},INSTANCE_CONNECTION_NAME=${_INSTANCE_CONNECTION_NAME},GCS_BUCKET_NAME=${_GCS_BUCKET_NAME},QUEUE_NAME=${_QUEUE_NAME},ENV=deployment'
+      '--set-env-vars', 'DB_USER=${_DB_USER},DB_PASS=${_DB_PASS},DB_NAME=${_DB_NAME},DB_HOST=${_DB_HOST},INSTANCE_CONNECTION_NAME=${_INSTANCE_CONNECTION_NAME},GCS_BUCKET_NAME=${_GCS_BUCKET_NAME},QUEUE_NAME=${_QUEUE_NAME},ENV=deployment'
     ]
 substitutions:
   _REGION: 'your-region'
@@ -24,7 +24,7 @@ substitutions:
   _IMAGE_NAME: 'your-image-name'
   _SERVICE_NAME: 'your-service-name'
   _DB_USER: 'your-db-user'
-  _DB_PASSWORD: 'your-db-password'
+  _DB_PASS: 'your-db-password'
   _DB_NAME: 'your-db-name'
   _DB_HOST: 'your-db-host'
   _QUEUE_NAME: 'your-queue-name'
