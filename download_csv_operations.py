@@ -15,8 +15,8 @@ def upload_csv_to_cloud_storage(csv_data: str) -> str:
         blob = bucket.blob(destination_blob_name)
         csv_bytes = csv_data.encode("utf-8")
         blob.upload_from_string(csv_bytes, content_type="text/csv")
-        url = blob.generate_signed_url(expiration=3600)
-        return url
+        blob.make_public()
+        return blob.public_url
     except Exception as e:
         print(f"Error in upload_csv_to_cloud_storage: {e}\n{traceback.format_exc()}")
         raise
