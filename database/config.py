@@ -53,6 +53,8 @@ def create_database_if_not_exists():
 
 def connect_with_connector():
     """Connect to Cloud SQL with Google Cloud SQL Connector"""
+    if not INSTANCE_CONNECTION_NAME:
+        raise ValueError("INSTANCE_CONNECTION_NAME environment variable is not set")
     ip_type =IPTypes.PUBLIC
     connector = Connector(refresh_strategy="LAZY")
 
