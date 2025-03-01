@@ -27,7 +27,11 @@ def upload_csv():
         product_name = row["Product Name"]
         input_images = row["Input Image Urls"].split(",")
         save_product(request_id=request_id, product_name=product_name, input_images=input_images)
-    create_cloud_task(request_id)
+    task_response = create_cloud_task(request_id)
+    if task_response is None:
+        print("[ERROR] Cloud Task creation failed.")
+    else:
+        print(f"[DEBUG] Cloud Task created successfully with name: {task_response}")
     return jsonify({"request_id": request_id, "status": "PENDING"}), 202
 
 
