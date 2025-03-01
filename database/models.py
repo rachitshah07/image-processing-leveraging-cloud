@@ -23,6 +23,14 @@ class Product(Base):
     status = Column(String, default="PENDING")
 
     request = relationship("ProcessingRequest", back_populates="products")
-
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "request_id": self.request_id,
+            "product_name": self.product_name,
+            "input_images": self.input_images,
+            "output_images": self.output_images,
+            "status": self.status,
+        }
 Base.metadata.create_all(engine)
 print("Tables created successfully (if not already present).")
