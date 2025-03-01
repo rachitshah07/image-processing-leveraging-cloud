@@ -9,10 +9,10 @@ from google.cloud.sql.connector import Connector, IPTypes
 import pg8000
 import sqlalchemy
 
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
-if os.path.exists(BASE_DIR):
-    load_dotenv(BASE_DIR)
+if os.environ.get("ENV","deployment")=="local":
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+    if os.path.exists(BASE_DIR):
+        load_dotenv(BASE_DIR)
 
 
 DB_USER = os.getenv("DB_USER", "postgres")
@@ -20,8 +20,7 @@ DB_PASS = os.getenv("DB_PASS", "password")
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_NAME = os.getenv("DB_NAME", "image_processing")
 INSTANCE_CONNECTION_NAME = os.getenv("INSTANCE_CONNECTION_NAME")
-LOCAL_ENV = os.getenv("ENV", "true").lower() == "true" 
-
+LOCAL_ENV = os.getenv("ENV","deployment")
 encoded_password = urllib.parse.quote_plus(DB_PASS)
 
 Base = declarative_base()
@@ -33,7 +32,7 @@ def create_database_if_not_exists():
     """Creates local database if not exists"""
     try:
         connection = psycopg2.connect(
-            dbname="postgres", user=DB_USER, password=DB_PASS, host=DB_HOST
+            dbname=DB_USER, user=DB_USER, password=DB_PASS, host=DB_HOST
         )
         connection.autocommit = True
         cursor = connection.cursor()
@@ -71,7 +70,7 @@ def connect_with_connector():
     return sqlalchemy.create_engine("postgresql+pg8000://", creator=getconn)
 
 
-if LOCAL_ENV:
+if LOCAL_ENV == "local":
     print("Running in Local Environment")
     DB_URL = f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}/{DB_NAME}"
     create_database_if_not_exists()
