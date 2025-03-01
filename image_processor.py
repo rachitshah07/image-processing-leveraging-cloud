@@ -3,14 +3,15 @@ from PIL import Image, UnidentifiedImageError
 import io
 from google.cloud import storage
 from google.auth import default
-from database.database import update_product_images, mark_request_completed, get_products
+from database.database import get_pending_products, update_product_images, mark_request_completed, get_products
 from dotenv import load_dotenv
 import os
 import urllib.parse
 credentials , _ = default()
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
-load_dotenv(BASE_DIR)
+if os.environ.get("ENV") == "local":
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".env"))
+    load_dotenv(BASE_DIR)
 GCS_BUCKET_NAME = os.environ.get("GCS_BUCKET_NAME")
 
 try:
@@ -18,7 +19,6 @@ try:
     bucket = storage_client.bucket(GCS_BUCKET_NAME)
 except Exception as e:
     print(f"Error initializing Google Cloud Storage: {e}")
-    raise
 
 def generate_output_filename(image_url):
     """Generates a filename by keeping a reference to the input URL."""
@@ -66,14 +66,15 @@ def compress_and_upload(image_url, output_filename):
         return None
 
 def process_product_images(request_id):
+    message = "Failure"
     try:
-        products = get_products(request_id)
+        products = get_pending_products(request_id)
         if not products:
             print(f"No products found for request ID: {request_id}")
-            return
+            return True,"Success:No products found for request ID. Skipping "
     except Exception as e:
         print(f"Error fetching products for request ID {request_id}: {e}")
-        return
+        return False,message
 
     for product in products:
         try:
@@ -91,10 +92,13 @@ def process_product_images(request_id):
             else:
                 print(f"No valid images processed for product ID {product['product_name']}")
         except Exception as e:
-            print(f"Error processing images for product ID {product['product_name']}: {e}")
+            print(f"Error processing images for product {product['product_name']}: {e}")
+            return False , message
 
     try:
         mark_request_completed(request_id)
         print(f"Processing completed for request ID: {request_id}")
+        return True, "Sucess"
     except Exception as e:
         print(f"Error marking request {request_id} as completed: {e}")
+        return False, message
