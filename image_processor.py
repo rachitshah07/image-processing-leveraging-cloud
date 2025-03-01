@@ -78,9 +78,9 @@ def process_product_images(request_id):
 
     for product in products:
         try:
-            input_urls = product.get("input_images", [])
+            input_urls = product.input_images if product.input_images else []
             output_urls = []
-            product_id = product["id"]
+            product_id = product.id
             for i, url in enumerate(input_urls):
                 output_filename =generate_output_filename(url)
                 processed_url = compress_and_upload(image_url=url, output_filename=output_filename)
@@ -90,9 +90,9 @@ def process_product_images(request_id):
             if output_urls:
                 update_product_images(product_id=product_id, output_images=output_urls)
             else:
-                print(f"No valid images processed for product ID {product['product_name']}")
+                print(f"No valid images processed for product id {product.id} and product name {product.product_name}")
         except Exception as e:
-            print(f"Error processing images for product {product['product_name']}: {e}")
+            print(f"Error processing images for product {product.product_name}: {e}")
             return False , message
 
     try:
