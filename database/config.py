@@ -88,12 +88,10 @@ def create_cloud_database_if_not_exists():
             db="postgres", 
             ip_type=IPTypes.PUBLIC
         )
+        conn.autocommit = True
         cursor = conn.cursor()
         cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{DB_NAME}';")
-        exists = cursor.fetchone()
-
-        conn.autocommit = True
-        
+        exists = cursor.fetchone()     
         if not exists:
             cursor.execute(f"CREATE DATABASE {DB_NAME};")
             print(f"Database '{DB_NAME}' created successfully in Cloud SQL.")

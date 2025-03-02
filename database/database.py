@@ -1,7 +1,7 @@
 import traceback
 from typing import List
-from database.models import ProcessingRequest, Product
 from database.config import SessionLocal
+from database.models import ProcessingRequest, Product
 
 def get_db():
     db = SessionLocal()
