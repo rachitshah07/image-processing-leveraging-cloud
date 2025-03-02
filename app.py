@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import uuid
 from database.database import save_product , save_request ,get_products,get_request_status,get_completed_request_products
 from cloud_tasks import create_cloud_task
+from webhook import send_alert_to_webhook
 from download_csv_operations import upload_csv_to_cloud_storage
 import pandas as pd
 import os
@@ -60,7 +61,10 @@ def process_images():
         return jsonify({"error": "Missing request_id"}), 400
 
     status,message = process_product_images(request_id)
+    final_status = "COMPLETED" if status else "PENDING"
 
+    if final_status == "COMPLETED":
+        send_alert_to_webhook(request_id, final_status, message)
     return jsonify(
     {
         "request_id": request_id,
