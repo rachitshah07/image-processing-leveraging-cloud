@@ -23,11 +23,21 @@ This project implements an image compression service that leverages Google Cloud
 ## Project Structure
 ```
 .
-├── app.py                  # Main Flask application 
-├── requirements.txt        # Dependencies 
-├── image_processor.py      # Google Cloud Storage utility functions and Compressing Image Functions
-├── cloud_tasks.py          # Cloud Tasks queue management 
-└── README.md               # Project Documentation
+├── database/ # Database configuration and models
+│ ├── init.py
+│ ├── config.py
+│ ├── database.py
+│ └── models.py
+├── app.py # Main Flask application
+├── cloud_tasks.py # Cloud Tasks queue management
+├── cloudbuild.yaml # Google Cloud Build configuration
+├── Dockerfile # Containerization configuration
+├── download_csv_operations.py # CSV generation utilities
+├── image_processor.py # Image processing and GCS operations
+├── requirements.txt # Python dependencies
+├── webrook.py # Webhook configuration (presumed)
+├── .gitignore # Version control exclusion list
+└── README.md # Project documentation
 ```
 
 ## Installation and Setup
