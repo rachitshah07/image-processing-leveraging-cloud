@@ -152,7 +152,7 @@ WEBHOOK_URL=https://your-webhook-endpoint-url
 - **Worker Functions:** Handles image download, compression (50% quality), GCS upload, and database updates
 
 ## Diagrams
-- **Use Case Diagram:** ![Use Case Diagram](diagrams/use_case_diagram.png)
+- **Use Case Diagram:** ![UseCase Diagram](diagrams/use_case_diagram.png)
 - **Sequence Diagram:** ![Sequence Diagram](diagrams/sequence_diagram.png)
 - **Class Diagram:** ![Class Diagram](diagrams/class_diagram.png)
 
