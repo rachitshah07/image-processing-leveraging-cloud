@@ -152,9 +152,22 @@ WEBHOOK_URL=https://your-webhook-endpoint-url
 - **Worker Functions:** Handles image download, compression (50% quality), GCS upload, and database updates
 
 ## Diagrams
-- **Use Case Diagram:** ![Use Case Diagram](diagrams/use_case_diagram.png){ width=400px }
-- **Sequence Diagram:** ![Sequence Diagram](diagrams/sequence_diagram.png)
-- **Class Diagram:** ![Class Diagram](diagrams/class_diagram.png)
+
+<h3>Use Case Diagram</h3>
+<div align="center">
+  <img src="diagrams/use_case_diagram.png" alt="Use Case Diagram" width="400">
+</div>
+
+<h3>Sequence Diagram</h3>
+<div align="center">
+  <img src="diagrams/sequence_diagram.png" alt="Sequence Diagram" width="400">
+</div>
+
+<h3>Class Diagram</h3>
+<div align="center">
+  <img src="diagrams/class_diagram.png" alt="Class Diagram" width="400">
+</div>
+
 
 ## Additional Information
 - Ensure proper IAM permissions for GCP services
